@@ -3,10 +3,10 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os
-
 
 def format_phone_number(phone):
     try:
@@ -37,8 +37,9 @@ def iniciar_sessao_whatsapp():
     firefox_options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
 
-    # Iniciar o navegador
-    driver = webdriver.Firefox(options=firefox_options)
+    driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+
+    # Inicia o driver com o serviço e as opções
 
     # Abrir o WhatsApp Web
     driver.get("https://web.whatsapp.com/")
@@ -74,10 +75,10 @@ def enviar_mensagem(driver, telephone, mensagem, nome_destinatario):
 
         print(f"Carregando conversa com {nome_destinatario}...")
 
-        btn_enviar = WebDriverWait(driver, 60).until(
+        btn_enviar = WebDriverWait(driver, 15).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="main"]/footer/div[1]/div/span/div/div[2]/div[2]/button'))
         )
-        time.sleep(1)
+        time.sleep(2)
         btn_enviar.click()
 
         time.sleep(5)
